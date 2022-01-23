@@ -76,6 +76,7 @@
       },
       "url": "https://packages.unity.com"
     },
+<<<<<<< HEAD
     "com.unity.purchasing": {
       "version": "2.0.6",
       "depth": 0,
@@ -83,6 +84,8 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
+=======
+>>>>>>> parent of 81a38b8 (Upgrade To URP)
     "com.unity.settings-manager": {
       "version": "1.0.0",
       "depth": 1,
