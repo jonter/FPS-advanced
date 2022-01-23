@@ -35,3 +35,12 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+FPS/Assets/Asset Packs/Standard Assets/Environment/SpeedTree/Broadleaf/Broadleaf_Desktop.spm.meta
+FPS/Assets/Asset Packs/Standard Assets/Environment/SpeedTree/Broadleaf/Broadleaf_Desktop_Atlas.tga.meta
+FPS/Assets/Asset Packs/Standard Assets/Environment/SpeedTree/Broadleaf/Broadleaf_Desktop_Atlas_Billboards.tga.meta
+FPS/Assets/Asset Packs/Standard Assets/Environment/SpeedTree/Conifer/Conifer_Desktop_Atlas.tga.meta
+FPS/Assets/Asset Packs/Standard Assets/Environment/SpeedTree/Conifer/Conifer_Desktop_Atlas_Billboards.tga.meta
+FPS/Assets/Asset Packs/Standard Assets/Environment/SpeedTree/Palm/Palm_Desktop_Atlas.tga.meta
+FPS/Assets/Asset Packs/Standard Assets/Environment/SpeedTree/Palm/Palm_Desktop_Atlas_Billboards.tga.meta
+FPS/Packages/manifest.json
+FPS/Packages/packages-lock.json
