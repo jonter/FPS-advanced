@@ -7,7 +7,8 @@ public enum PlayerState
     ON_GROUND,
     IN_AIR,
     IN_SPRINT,
-    IN_SLIDE
+    IN_SLIDE,
+    IN_CROUCH
 }
 
 public class PlayerMovement : MonoBehaviour
@@ -23,23 +24,30 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float flySpeedControl = 4;
     // то насколько быстро изменяется currentSpeed от normalSpeed до sprintSpeed
     [SerializeField] float accelerationSpeed = 4; 
-    [SerializeField] float fieldOfViewSpeed = 80; 
-
+   
     float currentSpeed;
     CharacterController controller;
+    Camera playerCamera;
+    StaminaController staminaController;
 
-    [SerializeField] float gravity = -9.81f;
+    float gravity;
 
     bool isGrounded = false;
 
     [SerializeField] GameObject legs;
     [SerializeField] LayerMask groundMask;
 
-    Camera playerCamera;
+
+    public PlayerState GetPlayerState()
+    {
+        return state;
+    }
 
     // Start is called before the first frame update
     void Start()
     {
+        staminaController = FindObjectOfType<StaminaController>();
+        gravity = Physics.gravity.y;
         currentSpeed = normalSpeed;
         controller = GetComponent<CharacterController>();
         playerCamera = Camera.main;
@@ -52,18 +60,9 @@ public class PlayerMovement : MonoBehaviour
         VerticalMovement();
         SprintControl();
         SpeedChangeControl();
-        FieldOfViewChange();
 
     }
 
-    void FieldOfViewChange()
-    {
-        float cameraFOV = playerCamera.fieldOfView;
-        if (state == PlayerState.IN_SPRINT) cameraFOV += fieldOfViewSpeed * Time.deltaTime;
-        else if(state != PlayerState.IN_AIR) cameraFOV -= fieldOfViewSpeed * Time.deltaTime;
-        cameraFOV = Mathf.Clamp(cameraFOV, 60, 80);
-        playerCamera.fieldOfView = cameraFOV;
-    }
 
     void SpeedChangeControl()
     {
@@ -90,6 +89,8 @@ public class PlayerMovement : MonoBehaviour
             state = PlayerState.ON_GROUND;
         }
         if (angle > 50 && state == PlayerState.IN_SPRINT) state = PlayerState.ON_GROUND;
+        if (staminaController.currentStam <= 0 && state == PlayerState.IN_SPRINT)
+            state = PlayerState.ON_GROUND;
     }
 
     void HorizontalMove()
@@ -122,9 +123,10 @@ public class PlayerMovement : MonoBehaviour
         {
             velocityY = -2f;
 
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space) && staminaController.currentStam > 0)
             {
                 velocityY = playerJump;
+                staminaController.SpendStamina(20);
             }
         }
 
