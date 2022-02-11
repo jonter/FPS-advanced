@@ -10,7 +10,7 @@ public enum PlayerState
     IN_SLIDE,
     IN_CROUCH
 }
-
+[SelectionBase]
 public class PlayerMovement : MonoBehaviour
 {
     PlayerState state = PlayerState.ON_GROUND;
