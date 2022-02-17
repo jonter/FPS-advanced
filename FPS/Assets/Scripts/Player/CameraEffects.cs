@@ -19,7 +19,8 @@ public class CameraEffects : MonoBehaviour
     {
         PlayerState state = player.GetPlayerState();
         float cameraFOV = cam.fieldOfView;
-        if (state == PlayerState.IN_SPRINT) cameraFOV += fieldOfViewSpeed * Time.deltaTime;
+        if (state == PlayerState.IN_SPRINT || state == PlayerState.IN_SLIDE)
+            cameraFOV += fieldOfViewSpeed * Time.deltaTime;
         else if (state != PlayerState.IN_AIR) cameraFOV -= fieldOfViewSpeed * Time.deltaTime;
         cameraFOV = Mathf.Clamp(cameraFOV, 60, 80);
         cam.fieldOfView = cameraFOV;

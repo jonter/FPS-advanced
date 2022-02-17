@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1810288802630399851}
   - component: {fileID: 1060996960207804266}
   - component: {fileID: 5335047637554847242}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Fire Effect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4823,7 +4823,7 @@ GameObject:
   - component: {fileID: 5578959945446593715}
   - component: {fileID: 5551393006285244641}
   - component: {fileID: 5561512026872341567}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Mag
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4904,7 +4904,7 @@ GameObject:
   - component: {fileID: 5579225714053576697}
   - component: {fileID: 5549662519008064651}
   - component: {fileID: 5561600669642921861}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Trigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4985,7 +4985,7 @@ GameObject:
   - component: {fileID: 5579093283771816521}
   - component: {fileID: 5551691060794583903}
   - component: {fileID: 5561591694533111277}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Bolt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5066,7 +5066,7 @@ GameObject:
   - component: {fileID: 5580793538174534487}
   - component: {fileID: 5551246289632659497}
   - component: {fileID: 5561510097547486727}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Rear_Sight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5147,7 +5147,7 @@ GameObject:
   - component: {fileID: 5580799193737414685}
   - component: {fileID: 5549616912161607793}
   - component: {fileID: 5559954387960160211}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Sight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5231,7 +5231,7 @@ GameObject:
   - component: {fileID: 50697719091591992}
   - component: {fileID: 2274679024759804447}
   - component: {fileID: 8642104797414862443}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: M4_8
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5342,8 +5342,10 @@ MonoBehaviour:
   ammoInStock: 30
   ammoInStockText: {fileID: 0}
   ammoAllText: {fileID: 0}
-  hitEffectPrefab: {fileID: 0}
-  hitEnemyEffectPrefab: {fileID: 0}
+  hitEffectPrefab: {fileID: 4011104945786100484, guid: 22c13de321285d246851f1595c92f59f,
+    type: 3}
+  hitEnemyEffectPrefab: {fileID: 4011104945786100484, guid: b41359365a301824a92bae51d9c319df,
+    type: 3}
   isInAction: 0
 --- !u!82 &8642104797414862443
 AudioSource:

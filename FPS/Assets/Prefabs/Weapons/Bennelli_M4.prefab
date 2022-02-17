@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2009070283710138754}
   - component: {fileID: 439935296217690699}
   - component: {fileID: 4427037614174117435}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Bennelli_M4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -229,7 +229,7 @@ GameObject:
   - component: {fileID: 1198361262614480448}
   - component: {fileID: 1208845990468685774}
   - component: {fileID: 1217490822393375636}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Pump
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -310,7 +310,7 @@ GameObject:
   - component: {fileID: 1198432715556638738}
   - component: {fileID: 1208790399262524252}
   - component: {fileID: 1217158378259214094}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Trigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -391,7 +391,7 @@ GameObject:
   - component: {fileID: 4007135782935093501}
   - component: {fileID: 5567523024239654898}
   - component: {fileID: 2085422050305048229}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Fire Effect
   m_TagString: Untagged
   m_Icon: {fileID: 0}

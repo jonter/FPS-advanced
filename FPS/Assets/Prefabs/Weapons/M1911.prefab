@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3117218458262873785}
   - component: {fileID: 8912996560911235046}
   - component: {fileID: 6560859156745397767}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Fire Effect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4823,7 +4823,7 @@ GameObject:
   - component: {fileID: 5560442078415319880}
   - component: {fileID: 5571515886351702694}
   - component: {fileID: 5580355242735462156}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Trigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4904,7 +4904,7 @@ GameObject:
   - component: {fileID: 5563275211265204130}
   - component: {fileID: 5571048609214815506}
   - component: {fileID: 5580302011655577488}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Hammer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4986,7 +4986,7 @@ GameObject:
   - component: {fileID: 5558857856592813647}
   - component: {fileID: 3440655076137378571}
   - component: {fileID: 2672332260583330961}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: M1911
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5025,8 +5025,10 @@ MonoBehaviour:
   ammoInStock: 8
   ammoInStockText: {fileID: 0}
   ammoAllText: {fileID: 0}
-  hitEffectPrefab: {fileID: 0}
-  hitEnemyEffectPrefab: {fileID: 0}
+  hitEffectPrefab: {fileID: 4011104945786100484, guid: 22c13de321285d246851f1595c92f59f,
+    type: 3}
+  hitEnemyEffectPrefab: {fileID: 4011104945786100484, guid: b41359365a301824a92bae51d9c319df,
+    type: 3}
   isInAction: 0
 --- !u!95 &3440655076137378571
 Animator:
@@ -5067,7 +5069,7 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
+  MinDistance: 0.015625
   MaxDistance: 500
   Pan2D: 0
   rolloffMode: 0
@@ -5154,7 +5156,7 @@ GameObject:
   - component: {fileID: 5563108072826338728}
   - component: {fileID: 5571925262407800616}
   - component: {fileID: 5580371066813117516}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: M1911
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5239,7 +5241,7 @@ GameObject:
   - component: {fileID: 5563224173956314552}
   - component: {fileID: 5571707132423165846}
   - component: {fileID: 5581793580822283822}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Slide
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5320,7 +5322,7 @@ GameObject:
   - component: {fileID: 5560417492415206070}
   - component: {fileID: 5571917060940791618}
   - component: {fileID: 5580315042833464768}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Magazin
   m_TagString: Untagged
   m_Icon: {fileID: 0}

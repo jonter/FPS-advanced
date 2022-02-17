@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,16 +7,11 @@ using UnityEngine.UI;
 public class PlayerHealth : MonoBehaviour
 {
     [SerializeField] float health = 200;
-    [SerializeField] GameObject deathPanel;
-
     [SerializeField] Slider healthbar;
 
     [SerializeField] GameObject splatterImage;
 
-    void Start()
-    {
-        deathPanel.SetActive(false);
-    }
+    public event Action onDeath;
 
     private void Update()
     {
@@ -29,9 +25,7 @@ public class PlayerHealth : MonoBehaviour
 
         if (health <= 0)
         {
-            Cursor.lockState = CursorLockMode.None;
-            deathPanel.SetActive(true);
-            Time.timeScale = 0;
+            if(onDeath != null) onDeath();
         }
         else
         {
@@ -44,7 +38,7 @@ public class PlayerHealth : MonoBehaviour
     IEnumerator DisplaySplatter()
     {
         splatterImage.SetActive(true);
-        float randomZ = Random.Range(0, 360);
+        float randomZ = UnityEngine.Random.Range(0, 360);
         splatterImage.transform.rotation = Quaternion.Euler(0, 0, randomZ);
         yield return new WaitForSeconds(0.25f);
         splatterImage.SetActive(false);
