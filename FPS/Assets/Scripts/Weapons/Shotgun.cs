@@ -5,56 +5,6 @@ using UnityEngine.UI;
 
 public class Shotgun : MonoBehaviour
 {
-    [SerializeField] ParticleSystem fireVFX;
-
-    [SerializeField] Text ammoInStockText;
-    [SerializeField] Text ammoAllText;
-
-    public bool isInAction = false;
-
-    Inventory inv;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        inv = FindObjectOfType<Inventory>();
-    }
-
-
-
-    // Update is called once per frame
-    void Update()
-    {
-
-        if (Input.GetKeyDown(KeyCode.Mouse0))
-        {
-            if (isInAction == true) return;
-
-            if (inv.shotgunAmmo >= 1)
-            {
-                inv.shotgunAmmo--;
-                Shoot();
-                StartCoroutine(BeginAction(1));
-            }
-            else
-            {
-                print("Перезаряди оружие");
-            }
-        }
-
-
-        ammoAllText.text = "(" + inv.shotgunAmmo + ")";
-        ammoInStockText.text = "Shotgun";
-    }
-
-
-    IEnumerator BeginAction(float delayTime)
-    {
-        isInAction = true;
-        yield return new WaitForSeconds(delayTime);
-        isInAction = false;
-    }
-
 
     void Shoot()
     {
@@ -64,7 +14,7 @@ public class Shotgun : MonoBehaviour
         AudioSource audio = GetComponent<AudioSource>();
         audio.Play();
 
-        fireVFX.Play();
+        //fireVFX.Play();
 
         for(int i = 0; i < 12; i++)
         {

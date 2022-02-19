@@ -3,90 +3,74 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Pistol : MonoBehaviour
+public class Pistol : Weapon
 {
-    [SerializeField] ParticleSystem fireVFX;
 
-    [SerializeField] int ammoInStock = 8;
-
-    [SerializeField] Text ammoInStockText;
-    [SerializeField] Text ammoAllText;
-
-    [SerializeField] GameObject hitEffectPrefab;
-    [SerializeField] GameObject hitEnemyEffectPrefab;
-
-    public bool isInAction = false;
-
-    Inventory inv;
-
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        inv = FindObjectOfType<Inventory>();
+        ammoAllMax = 300;
+        ammoAll = 100;
+        maxAmmoInMagazine = 8;
+        currentAmmo = maxAmmoInMagazine;
+        StartCoroutine(PullWeapon());
     }
 
-
-
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
+        if (!isActive) return;
+        if (isInAction) return;
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            if (isInAction == true)  return; 
-
-            if(ammoInStock >= 1)
-            {
-                ammoInStock--;
-                Shoot();
-                StartCoroutine(BeginAction(0.2f));
-            }
-            else
-            {
-                print("Перезаряди оружие");
-            }  
+            PrepareShoot();
         }
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            if (isInAction == true) return;
-            Animator anim = GetComponent<Animator>();
-            anim.SetTrigger("reload");
-            StartCoroutine(BeginAction(1));
+            StartCoroutine(Reload());
         }
 
-        ammoAllText.text = "(" + inv.pistolAmmo + ")";
-        ammoInStockText.text = ammoInStock + "/8";
+        UpdateUITexts();
     }
 
-
-    IEnumerator BeginAction(float delayTime)
+    void PrepareShoot()
     {
-        isInAction = true;
-        yield return new WaitForSeconds(delayTime);
-        isInAction = false;
-    }
-
-
-    public void Reload()
-    {
-        //Отнять патроны из общего инвентаря
-        int addBullets = 8 - ammoInStock;
-
-        if(addBullets >= inv.pistolAmmo)
+        if(currentAmmo > 0)
         {
-            ammoInStock = ammoInStock + inv.pistolAmmo;
-            inv.pistolAmmo = 0;
+            currentAmmo--;
+            Shoot();
+            StartCoroutine(SetAction(1/fireRate));
         }
         else
         {
-            ammoInStock = 8;
-            inv.pistolAmmo = inv.pistolAmmo - addBullets;
+            StartCoroutine(Reload());
         }
 
     }
 
-    void Shoot()
+
+    public IEnumerator Reload()
+    {
+        if (ammoAll <= 0) yield break;
+        if (currentAmmo == maxAmmoInMagazine) yield break;
+        anim.SetTrigger("reload");
+        StartCoroutine(SetAction(reloadTime));
+        // это время когда обойма в анимации залетает в оружие
+        yield return new WaitForSeconds(45f/60f);
+        ReloadMagazine();
+    }
+
+    protected override void HideWeaponAnim()
+    {
+        anim.SetTrigger("hide");
+    }
+
+    protected override void PullWeaponAnim()
+    {
+        anim.SetTrigger("show");
+    }
+
+    override protected void Shoot()
     {
         Animator anim = GetComponent<Animator>();
         anim.SetTrigger("fire");
@@ -107,17 +91,9 @@ public class Pistol : MonoBehaviour
             if (enemy)
             {
                 enemy.GetDamage(10);
-                GameObject clone = Instantiate(hitEnemyEffectPrefab, hit.point, Quaternion.LookRotation(hit.normal));
-
-                Destroy(clone, 0.3f);
             }
-            else
-            {
-                GameObject clone = Instantiate(hitEffectPrefab, hit.point, Quaternion.LookRotation(hit.normal));
-                Destroy(clone, 0.3f);
-            }
+           
         }
-        
 
     }
 
