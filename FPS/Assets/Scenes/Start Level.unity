@@ -131,7 +131,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-3688
+  m_Name: pb_Mesh-3686
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -517,7 +517,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh17516
+  m_Name: pb_Mesh17518
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -3709,7 +3709,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh17554
+  m_Name: pb_Mesh17556
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -4234,7 +4234,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh17204
+  m_Name: pb_Mesh17198
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -16613,7 +16613,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh17192
+  m_Name: pb_Mesh17186
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -17513,8 +17513,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04c0344ecf561764b8aed0a1de4bc8ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseSensivity: 200
+  mouseSensivity: 2
   player: {fileID: 1640481044}
+  extraRotate: {x: 0, y: 0, z: 0}
 --- !u!114 &963194230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17560,6 +17561,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fieldOfViewSpeed: 100
+  sprintAmplitude: 6
+  sprintRate: 10
+  coilAmplitude: 8
+  coilRate: 15
 --- !u!1 &967349949
 GameObject:
   m_ObjectHideFlags: 0
@@ -19213,7 +19218,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh17478
+  m_Name: pb_Mesh17480
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2

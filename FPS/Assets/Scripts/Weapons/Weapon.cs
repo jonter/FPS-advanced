@@ -9,6 +9,7 @@ public abstract class Weapon : MonoBehaviour
 
     protected float reloadTime = 1;
     [SerializeField] protected float fireRate = 6;
+    [SerializeField] protected float damage = 10;
     [SerializeField] protected ParticleSystem fireVFX;
 
     protected int maxAmmoInMagazine;
@@ -26,11 +27,14 @@ public abstract class Weapon : MonoBehaviour
     [SerializeField] protected GameObject weaponInner;
     protected Animator anim;
 
+    protected CameraEffects camera;
+
     protected bool isInAction = false;
     protected bool isActive = false;
 
     public IEnumerator PullWeapon() // вызывается из скрипта переключения оружия
     {
+        camera = GetComponentInParent<CameraEffects>();
         anim = GetComponent<Animator>();
         isInAction = true;
         weaponInner.SetActive(true);

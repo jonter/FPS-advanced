@@ -72,29 +72,33 @@ public class Pistol : Weapon
 
     override protected void Shoot()
     {
-        Animator anim = GetComponent<Animator>();
-        anim.SetTrigger("fire");
+        DisplayShoot();
 
-        AudioSource audio = GetComponent<AudioSource>();
-        audio.Play();
-
-        fireVFX.Play();
         RaycastHit hit;
         Vector3 startPos = transform.parent.position;
         Vector3 direction = transform.parent.forward;
         bool isHit = Physics.Raycast(startPos, direction, out hit, 100);
 
         if (isHit)
-        {
-            EnemyHealth enemy = hit.transform.GetComponent<EnemyHealth>();
+            ProcessHit(hit);
 
-            if (enemy)
-            {
-                enemy.GetDamage(10);
-            }
-           
-        }
+    }
 
+    private void ProcessHit(RaycastHit hit)
+    {
+        EnemyHealth enemy = hit.transform.GetComponent<EnemyHealth>();
+        enemy?.GetDamage(damage);
+    }
+
+    void DisplayShoot()
+    {
+        Animator anim = GetComponent<Animator>();
+        anim.SetTrigger("fire");
+        StartCoroutine(camera.Coil());
+
+        AudioSource audio = GetComponent<AudioSource>();
+        audio.Play();
+        fireVFX.Play();
     }
 
 
