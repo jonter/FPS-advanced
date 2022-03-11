@@ -35,9 +35,9 @@ public class StaminaController : MonoBehaviour
     {
         if (isTired) return;
         PlayerState state = player.GetPlayerState();
-        if(state == PlayerState.IN_SPRINT)
+        if(state == PlayerState.SPRINT)
             currentStam -= stamDecreaseSpeed * Time.deltaTime;
-        else if(state == PlayerState.ON_GROUND || state == PlayerState.IN_CROUCH)
+        else if(state == PlayerState.WALK || state == PlayerState.CROUCH)
             currentStam += stamRestoreSpeed * Time.deltaTime;
 
         if (currentStam >= maxStam) currentStam = maxStam;

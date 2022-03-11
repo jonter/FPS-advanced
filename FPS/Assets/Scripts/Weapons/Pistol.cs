@@ -72,6 +72,7 @@ public class Pistol : Weapon
 
     override protected void Shoot()
     {
+        base.Shoot();
         DisplayShoot();
 
         RaycastHit hit;
@@ -81,7 +82,6 @@ public class Pistol : Weapon
 
         if (isHit)
             ProcessHit(hit);
-
     }
 
     private void ProcessHit(RaycastHit hit)

@@ -47,15 +47,16 @@ public class CameraEffects : MonoBehaviour
     void Update()
     {
         PlayerState state = player.GetPlayerState();
-        ZoomCamera(state);
-        SprintEffect(state);
+        bool isGrounded = player.GetGroundState();
+        ZoomCamera(state, isGrounded);
+        SprintEffect(state, isGrounded);
 
         cam.GetComponent<PlayerLook>().extraRotate = sprintRotation + coilRotation;
     }
 
-    void SprintEffect(PlayerState state)
+    void SprintEffect(PlayerState state, bool isGrounded)
     {
-        if (state == PlayerState.IN_SPRINT)
+        if (state == PlayerState.SPRINT && isGrounded)
         {
             timer += Time.deltaTime;
             float yRot = Mathf.Sin(timer*sprintRate) * sprintAmplitude;
@@ -76,19 +77,19 @@ public class CameraEffects : MonoBehaviour
         Vector3 end = new Vector3(0, 0, 0);
         while(t2 < 1)
         {
-            t2 += Time.deltaTime * sprintRate * 2;
+            t2 += Time.deltaTime * sprintRate * 3;
             sprintRotation = Vector3.Lerp(start, end, t2);
             yield return null;
         }
         sprintRotation = end;
     }
 
-    void ZoomCamera(PlayerState state)
+    void ZoomCamera(PlayerState state, bool isGrounded)
     {
         float cameraFOV = cam.fieldOfView;
-        if (state == PlayerState.IN_SPRINT || state == PlayerState.IN_SLIDE)
+        if (state == PlayerState.SPRINT || state == PlayerState.SLIDE)
             cameraFOV += fieldOfViewSpeed * Time.deltaTime;
-        else if (state != PlayerState.IN_AIR) cameraFOV -= fieldOfViewSpeed * Time.deltaTime;
+        else if (isGrounded) cameraFOV -= fieldOfViewSpeed * Time.deltaTime;
         cameraFOV = Mathf.Clamp(cameraFOV, 60, 80);
         cam.fieldOfView = cameraFOV;
     }

@@ -28,12 +28,14 @@ public abstract class Weapon : MonoBehaviour
     protected Animator anim;
 
     protected CameraEffects camera;
+    protected PlayerMovement player;
 
     protected bool isInAction = false;
     protected bool isActive = false;
 
     public IEnumerator PullWeapon() // вызывается из скрипта переключения оружия
     {
+        player = GetComponentInParent<PlayerMovement>();
         camera = GetComponentInParent<CameraEffects>();
         anim = GetComponent<Animator>();
         isInAction = true;
@@ -70,7 +72,10 @@ public abstract class Weapon : MonoBehaviour
         isInAction = false;
     }
 
-    protected abstract void Shoot();
+    protected virtual void Shoot()
+    {
+        player.StopSprint();
+    }
 
     protected void ReloadMagazine()
     {

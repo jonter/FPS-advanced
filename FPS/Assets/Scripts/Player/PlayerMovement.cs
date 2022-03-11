@@ -4,17 +4,16 @@ using UnityEngine;
 
 public enum PlayerState
 {
-    ON_GROUND,
-    IN_AIR,
-    IN_SPRINT,
-    IN_SLIDE,
-    IN_CROUCH
+    WALK,
+    SPRINT,
+    SLIDE,
+    CROUCH
 }
 
 [SelectionBase]
 public class PlayerMovement : MonoBehaviour
 {
-    PlayerState state = PlayerState.ON_GROUND;
+    PlayerState state = PlayerState.WALK;
 
     Vector3 velocity;
     float velocityY;
@@ -43,6 +42,10 @@ public class PlayerMovement : MonoBehaviour
 
     float alpha = 0;
 
+    public bool GetGroundState()
+    {
+        return isGrounded;
+    }
 
     public PlayerState GetPlayerState()
     {
@@ -73,7 +76,7 @@ public class PlayerMovement : MonoBehaviour
 
     void SizeControl()
     {
-        if (state == PlayerState.IN_CROUCH || state == PlayerState.IN_SLIDE)
+        if (state == PlayerState.CROUCH || state == PlayerState.SLIDE)
             alpha += crouchStateSpeed * Time.deltaTime;
         else alpha -= crouchStateSpeed * Time.deltaTime;
         alpha = Mathf.Clamp(alpha, 0, 1);
@@ -91,26 +94,26 @@ public class PlayerMovement : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.LeftControl))
         {
-            if (state == PlayerState.IN_SPRINT) state = PlayerState.IN_SLIDE;
-            else if(state == PlayerState.ON_GROUND) state = PlayerState.IN_CROUCH;
+            if (state == PlayerState.SPRINT) state = PlayerState.SLIDE;
+            else if(state == PlayerState.WALK) state = PlayerState.CROUCH;
         }
         else if (Input.GetKeyUp(KeyCode.LeftControl))
         {
-            if(state == PlayerState.IN_CROUCH || state == PlayerState.IN_SLIDE)
-                state = PlayerState.ON_GROUND;
+            if(state == PlayerState.CROUCH || state == PlayerState.SLIDE)
+                state = PlayerState.WALK;
         }
 
-        if (state == PlayerState.IN_SLIDE && velocity.magnitude < 8) 
-            state = PlayerState.IN_CROUCH;
+        if (state == PlayerState.SLIDE && velocity.magnitude < 8) 
+            state = PlayerState.CROUCH;
     }
 
 
     void SpeedChangeControl()
     {
         float change = accelerationSpeed * Time.deltaTime;
-        if (state == PlayerState.IN_SPRINT) currentSpeed += change;
-        else if (state == PlayerState.IN_CROUCH) currentSpeed -= change;
-        else if (state == PlayerState.ON_GROUND)
+        if (state == PlayerState.SPRINT) currentSpeed += change;
+        else if (state == PlayerState.CROUCH) currentSpeed -= change;
+        else if (state == PlayerState.WALK)
         {
             if (currentSpeed > normalSpeed) currentSpeed -= change;
             else currentSpeed += change;
@@ -126,17 +129,22 @@ public class PlayerMovement : MonoBehaviour
         Vector3 dirVelocity = velocity.normalized;
         float angle = Vector3.Angle(cameraDir, dirVelocity);
 
-        if (Input.GetKey(KeyCode.LeftShift) && state == PlayerState.ON_GROUND)
+        if (Input.GetKeyDown(KeyCode.LeftShift) && state == PlayerState.WALK)
         {
-            state = PlayerState.IN_SPRINT;
+            state = PlayerState.SPRINT;
         }
-        else if (Input.GetKeyUp(KeyCode.LeftShift) && state == PlayerState.IN_SPRINT)
-        {
-            state = PlayerState.ON_GROUND;
-        }
-        if (angle > 50 && state == PlayerState.IN_SPRINT) state = PlayerState.ON_GROUND;
-        if (staminaController.currentStam <= 0 && state == PlayerState.IN_SPRINT)
-            state = PlayerState.ON_GROUND;
+        
+        if (angle > 50 && state == PlayerState.SPRINT) state = PlayerState.WALK;
+        if (staminaController.currentStam <= 0 && state == PlayerState.SPRINT)
+            state = PlayerState.WALK;
+        if(velocity.magnitude < crouchSpeed && state == PlayerState.SPRINT) 
+            state = PlayerState.WALK;
+    }
+
+    public void StopSprint()
+    {
+        if (state == PlayerState.SPRINT)
+            state = PlayerState.WALK;
     }
 
     void HorizontalMove()
@@ -144,18 +152,15 @@ public class PlayerMovement : MonoBehaviour
         float inputX = Input.GetAxis("Horizontal");
         float inputZ = Input.GetAxis("Vertical");
         Vector3 dir = transform.right * inputX + transform.forward * inputZ;
-        // сделать проверку на слайдинг
-        if (state == PlayerState.ON_GROUND || state == PlayerState.IN_SPRINT
-            || state == PlayerState.IN_CROUCH)
+        
+        if(!isGrounded) // изменение скорости в полёте
+            velocity += dir * Time.deltaTime * flySpeedControl;
+        else if (state == PlayerState.SLIDE)
+            velocity -= velocity.normalized * Time.deltaTime * slideSlowness;
+        else // перемещение при соприкосновении с землёй
         {
             velocity = dir * currentSpeed;
             if (velocity.magnitude > currentSpeed) velocity = velocity.normalized * currentSpeed;
-        }
-        else if (state == PlayerState.IN_AIR)
-            velocity += dir * Time.deltaTime * flySpeedControl;
-        else if(state == PlayerState.IN_SLIDE)
-        {
-            velocity -= velocity.normalized * Time.deltaTime * slideSlowness;
         }
 
         controller.Move(velocity * Time.deltaTime);
@@ -166,18 +171,13 @@ public class PlayerMovement : MonoBehaviour
         isGrounded = Physics.CheckSphere(legs.transform.position, 0.2f, groundMask);
         velocityY = velocityY + gravity * Time.deltaTime;
 
-        if (!isGrounded) state = PlayerState.IN_AIR;
-        else if (state != PlayerState.IN_SPRINT && state != PlayerState.IN_SLIDE
-            && state != PlayerState.IN_CROUCH) 
-            state = PlayerState.ON_GROUND;
-
         if (isGrounded == true && velocityY < 0)
         {
             velocityY = -2f;
 
             if (Input.GetKeyDown(KeyCode.Space) && staminaController.currentStam > 0)
             {
-                if(state == PlayerState.IN_CROUCH) velocityY = playerJump/2;
+                if(state == PlayerState.CROUCH) velocityY = playerJump/2;
                 else velocityY = playerJump;
                 staminaController.SpendStamina(20);
             }
