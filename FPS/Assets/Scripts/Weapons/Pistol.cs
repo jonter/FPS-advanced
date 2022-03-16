@@ -48,7 +48,6 @@ public class Pistol : Weapon
 
     }
 
-
     public IEnumerator Reload()
     {
         if (ammoAll <= 0) yield break;
@@ -65,7 +64,7 @@ public class Pistol : Weapon
         anim.SetTrigger("hide");
     }
 
-    protected override void PullWeaponAnim()
+    protected override void ShowWeaponAnim()
     {
         anim.SetTrigger("show");
     }
@@ -77,15 +76,22 @@ public class Pistol : Weapon
 
         RaycastHit hit;
         Vector3 startPos = transform.parent.position;
-        Vector3 direction = transform.parent.forward;
+        float randomSpread = aimSpread.GetSpread();
+        float randomY = Random.Range(-randomSpread, randomSpread);
+        float randomX = Random.Range(-randomSpread, randomSpread);
+        
+        Vector3 randomVec = transform.parent.up * randomY
+            + transform.parent.right * randomX;
+        Vector3 direction = transform.parent.forward + randomVec;
         bool isHit = Physics.Raycast(startPos, direction, out hit, 100);
 
-        if (isHit)
-            ProcessHit(hit);
+        aimSpread.MakeShoot();
+        if (isHit) ProcessHit(hit);
     }
 
     private void ProcessHit(RaycastHit hit)
     {
+        DisplayBulletImpact(hit.point, hit.normal, hit.transform.gameObject.layer);
         EnemyHealth enemy = hit.transform.GetComponent<EnemyHealth>();
         enemy?.GetDamage(damage);
     }
@@ -99,6 +105,14 @@ public class Pistol : Weapon
         AudioSource audio = GetComponent<AudioSource>();
         audio.Play();
         fireVFX.Play();
+        StartCoroutine(ShowLight());
+    }
+
+    IEnumerator ShowLight()
+    {
+        fireVFX.GetComponentInChildren<Light>().enabled = true;
+        yield return new WaitForSeconds(0.05f);
+        fireVFX.GetComponentInChildren<Light>().enabled = false;
     }
 
 

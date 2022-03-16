@@ -29,18 +29,20 @@ public abstract class Weapon : MonoBehaviour
 
     protected CameraEffects camera;
     protected PlayerMovement player;
+    protected AimController aimSpread;
 
     protected bool isInAction = false;
     protected bool isActive = false;
 
     public IEnumerator PullWeapon() // вызывается из скрипта переключения оружия
     {
+        aimSpread = FindObjectOfType<AimController>();
         player = GetComponentInParent<PlayerMovement>();
         camera = GetComponentInParent<CameraEffects>();
         anim = GetComponent<Animator>();
         isInAction = true;
         weaponInner.SetActive(true);
-        PullWeaponAnim();
+        ShowWeaponAnim();
         yield return new WaitForSeconds(0.5f);
         isInAction = false;
         isActive = true;
@@ -56,7 +58,7 @@ public abstract class Weapon : MonoBehaviour
     }
 
 
-    protected abstract void PullWeaponAnim();
+    protected abstract void ShowWeaponAnim();
     protected abstract void HideWeaponAnim();
 
     protected void UpdateUITexts()
@@ -91,6 +93,19 @@ public abstract class Weapon : MonoBehaviour
             currentAmmo = maxAmmoInMagazine;
             ammoAll = ammoAll - addBullets;
         }
+    }
+
+    protected void DisplayBulletImpact(Vector3 point, Vector3 dir, LayerMask mask)
+    {
+        LayerMask enemyLayer = 10;
+        ParticleSystem impactVFX;
+        print($"enemy: {enemyLayer.value}, mask: {mask.value}");
+        if (enemyLayer.value == mask.value) impactVFX = hitEffectEnemy;
+        else impactVFX = hitEffectGround;
+
+        impactVFX.transform.position = point;
+        impactVFX.transform.LookAt(dir + point);
+        impactVFX.Play();
     }
 
     

@@ -8,7 +8,7 @@ public class AimController : MonoBehaviour
     float currentWidth;
     float minWidth;// менять при переключении оружия
 
-    float moveWidth, shootWidth;
+    float moveWidth, shootWidth, speedWidth;
     RectTransform aimWindow;
 
     [SerializeField] float maxMoveWidth = 120, maxShootWidth = 80;
@@ -16,9 +16,16 @@ public class AimController : MonoBehaviour
     [SerializeField] float shootSensivity = 1000;
     float widthCrouch, widthWalk, widthSprint, widthJump;
     float shootDuration = 0.2f;// менять при переключении оружия
-    
 
     Coroutine spreadCoroutine;
+
+    public float GetSpread()
+    {
+        if (currentWidth <= widthCrouch + minWidth) return 0;
+        float maxWidth = maxMoveWidth + maxShootWidth + minWidth + speedWidth;
+        float pecentage = currentWidth / maxWidth;
+        return pecentage * 0.35f;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -67,15 +74,30 @@ public class AimController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
-        {
-            MakeShoot();
-        }
         PlayerState state = player.GetPlayerState();
         bool isGrounded = player.GetGroundState();
         SetMoveWidth(state, isGrounded);
+        SetSpeedWidth(player.GetSpeed());
 
         SetAimWindow();
+        
+    }
+
+    void SetSpeedWidth(float playerSpeed)
+    {
+        float desiredWidth = 0;
+        if (playerSpeed > 0.5f) desiredWidth = 30;
+
+        if (speedWidth < desiredWidth)
+        {
+            speedWidth += moveSensivity * Time.deltaTime/2;
+            if (speedWidth > desiredWidth) speedWidth = desiredWidth;
+        }
+        else if (speedWidth > desiredWidth)
+        {
+            speedWidth -= moveSensivity * Time.deltaTime/2;
+            if (speedWidth < desiredWidth) speedWidth = desiredWidth;
+        }
     }
 
     void SetMoveWidth(PlayerState state, bool isGrounded)
@@ -101,7 +123,7 @@ public class AimController : MonoBehaviour
 
     void SetAimWindow()
     {
-        currentWidth = minWidth + moveWidth + shootWidth;
+        currentWidth = minWidth + moveWidth + shootWidth + speedWidth;
         aimWindow.sizeDelta = new Vector2(currentWidth, currentWidth);
     }
 }

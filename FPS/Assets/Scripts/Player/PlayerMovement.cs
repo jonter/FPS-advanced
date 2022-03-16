@@ -42,6 +42,11 @@ public class PlayerMovement : MonoBehaviour
 
     float alpha = 0;
 
+    public float GetSpeed()
+    {
+        return velocity.magnitude;
+    }
+
     public bool GetGroundState()
     {
         return isGrounded;
