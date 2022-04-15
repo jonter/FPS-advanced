@@ -30,12 +30,15 @@ public abstract class Weapon : MonoBehaviour
     protected CameraEffects camera;
     protected PlayerMovement player;
     protected AimController aimSpread;
+    protected WeaponTitleDisplay weaponTitleText;
 
     protected bool isInAction = false;
     protected bool isActive = false;
 
     public IEnumerator PullWeapon() // вызывается из скрипта переключения оружия
     {
+        UpdateUITexts();
+        weaponTitleText = FindObjectOfType<WeaponTitleDisplay>();
         aimSpread = FindObjectOfType<AimController>();
         player = GetComponentInParent<PlayerMovement>();
         camera = GetComponentInParent<CameraEffects>();

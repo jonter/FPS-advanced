@@ -12,7 +12,6 @@ public class Pistol : Weapon
         ammoAll = 100;
         maxAmmoInMagazine = 8;
         currentAmmo = maxAmmoInMagazine;
-        StartCoroutine(PullWeapon());
     }
 
     private void Update()
@@ -66,6 +65,7 @@ public class Pistol : Weapon
 
     protected override void ShowWeaponAnim()
     {
+        weaponTitleText.ShowTitle("Pistol");
         anim.SetTrigger("show");
     }
 
@@ -92,7 +92,7 @@ public class Pistol : Weapon
     private void ProcessHit(RaycastHit hit)
     {
         DisplayBulletImpact(hit.point, hit.normal, hit.transform.gameObject.layer);
-        EnemyHealth enemy = hit.transform.GetComponent<EnemyHealth>();
+        EnemyHitbox enemy = hit.transform.GetComponent<EnemyHitbox>();
         enemy?.GetDamage(damage);
     }
 

@@ -163,10 +163,9 @@ public class PlayerMovement : MonoBehaviour
         else if (state == PlayerState.SLIDE)
             velocity -= velocity.normalized * Time.deltaTime * slideSlowness;
         else // перемещение при соприкосновении с землёй
-        {
             velocity = dir * currentSpeed;
-            if (velocity.magnitude > currentSpeed) velocity = velocity.normalized * currentSpeed;
-        }
+
+        if (velocity.magnitude > currentSpeed) velocity = velocity.normalized * currentSpeed;
 
         controller.Move(velocity * Time.deltaTime);
     }
@@ -176,7 +175,9 @@ public class PlayerMovement : MonoBehaviour
         isGrounded = Physics.CheckSphere(legs.transform.position, 0.2f, groundMask);
         velocityY = velocityY + gravity * Time.deltaTime;
 
-        if (isGrounded == true && velocityY < 0)
+        if(isGrounded) PreventWallrun();
+
+        if (isGrounded && velocityY < 0)
         {
             velocityY = -2f;
 
@@ -191,4 +192,19 @@ public class PlayerMovement : MonoBehaviour
         Vector3 velocityDown = new Vector3(0, velocityY, 0);
         controller.Move(velocityDown * Time.deltaTime);
     }
+
+    void PreventWallrun()
+    {
+        RaycastHit hitInfo;
+        bool isHitBottom = Physics.Raycast(legs.transform.position, 
+            -legs.transform.up, out hitInfo, 1, groundMask);
+        if (isHitBottom == false) return;
+
+        float degreeLand = Vector3.Angle(Vector3.up, hitInfo.normal);
+        if (degreeLand < 50) return;
+
+        isGrounded = false;
+        velocity += new Vector3(hitInfo.normal.x, 0, hitInfo.normal.y) * Time.deltaTime * 40;
+    }
+
 }

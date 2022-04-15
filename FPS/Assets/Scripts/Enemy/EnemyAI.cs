@@ -8,6 +8,8 @@ public class EnemyAI : MonoBehaviour
 
     GameObject target;
     [SerializeField] float rageRadius = 20f;
+    [SerializeField] float loseRadius = 40f;
+    [SerializeField] float attackRadius = 2;
 
     [SerializeField] float enemyDamage = 20;
 
@@ -29,14 +31,7 @@ public class EnemyAI : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {
-        EnemyHealth enemy = GetComponent<EnemyHealth>();
-        if(enemy.isAlive == false)
-        {
-            agent.SetDestination(transform.position);
-            return;
-        }
-
+    { 
 
         CheckDistance();
 
@@ -53,7 +48,7 @@ public class EnemyAI : MonoBehaviour
             anim.SetBool("isWalk", true);
             agent.SetDestination(target.transform.position);
         }
-        else
+        else if(agent.desiredVelocity.magnitude <= 0.1f)
         {
             anim.SetBool("isWalk", false);
         }
@@ -61,9 +56,10 @@ public class EnemyAI : MonoBehaviour
 
     void AttackTarget()
     {
-        if (distance <= 2.6f)
+        if (distance <= attackRadius)
         {
             anim.SetBool("isAttack", true);
+            LookAtPlayer();
         }
         else
         {
@@ -71,20 +67,28 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    void LookAtPlayer()
+    {
+        Vector3 dir = target.transform.position - transform.position;
+        dir = dir.normalized;
+        dir = new Vector3(dir.x, 0, dir.z);
+        Quaternion lookRotaion = Quaternion.LookRotation(dir, Vector3.up);
+
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotaion, 0.1f);
+    }
+
     void CheckDistance()
     {
         distance = Vector3.Distance(transform.position, target.transform.position);
 
-        if (distance <= rageRadius)
-        {
-            isSeen = true;
-        }
+        if (distance <= rageRadius) isSeen = true;
+        else if (distance > loseRadius) isSeen = false;
     }
 
     public void Hit()
     {
+        if (distance > attackRadius) return;
         target.GetComponent<PlayerHealth>().GetDamage(enemyDamage);
-        print("Я тебя ударил!");
     }
 
     public void SetTarget()
@@ -99,6 +103,14 @@ public class EnemyAI : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, rageRadius);
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, loseRadius);
+    }
+
+    private void OnDisable()
+    {
+        agent.SetDestination(transform.position);
     }
 
 }

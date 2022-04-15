@@ -13,7 +13,6 @@ public class Shotgun : Weapon
         ammoAll = 10;
         maxAmmoInMagazine = 8;
         currentAmmo = maxAmmoInMagazine;
-        StartCoroutine(PullWeapon());
     }
 
     protected override void HideWeaponAnim()
@@ -23,6 +22,7 @@ public class Shotgun : Weapon
 
     protected override void ShowWeaponAnim()
     {
+        weaponTitleText.ShowTitle("Shotgun");
         anim.SetTrigger("show");
     }
 
@@ -54,7 +54,6 @@ public class Shotgun : Weapon
 
         if (currentAmmo > 0)
         {
-            
             Shoot();
             StartCoroutine(SetAction(1 / fireRate));
         }
@@ -106,18 +105,23 @@ public class Shotgun : Weapon
 
         AudioSource audio = GetComponent<AudioSource>();
         audio.Play();
-
         fireVFX.Play();
 
-        for(int i = 0; i < 12; i++)
+        float randomSpread = aimSpread.GetSpread();
+        float randomY = Random.Range(-randomSpread, randomSpread);
+        float randomX = Random.Range(-randomSpread, randomSpread);
+
+        Vector3 randomVec = transform.parent.up * randomY
+            + transform.parent.right * randomX;
+        aimSpread.MakeShoot();
+
+        for (int i = 0; i < 12; i++)
         {
-            CreateRaycast();
+            CreateRaycast(randomVec);
         }
-
-
     }
 
-    void CreateRaycast()
+    void CreateRaycast(Vector3 globalRandom)
     {
         RaycastHit hit;
         Vector3 startPos = transform.parent.position;
@@ -127,20 +131,39 @@ public class Shotgun : Weapon
         float randomZ = Random.Range(-0.2f, 0.2f);
 
         Vector3 randomVector = new Vector3(randomX, randomY, randomZ);
-        Vector3 direction = transform.parent.forward + randomVector;
+        Vector3 direction = transform.parent.forward + randomVector + globalRandom;
 
         bool isHit = Physics.Raycast(startPos, direction, out hit, 100);
 
-        Debug.DrawRay(startPos, direction * 100, Color.red, 5);
-
         if (isHit)
-        {
-            EnemyHealth enemy = hit.transform.GetComponent<EnemyHealth>();
+            ProcessHit(hit);
+    }
 
-            if (enemy)
-            {
-                enemy.GetDamage(10);
-            }
+    void ProcessHit(RaycastHit hit)
+    {
+        EnemyHitbox enemy = hit.transform.GetComponent<EnemyHitbox>();
+        DisplayImpactShootgun(hit.point, hit.normal, hit.transform.gameObject.layer);
+        if (enemy)
+        {
+            enemy.GetDamage(damage);
+        }
+    }
+
+    void DisplayImpactShootgun(Vector3 point, Vector3 dir, LayerMask mask)
+    {
+        LayerMask enemyLayer = 10;
+        ParticleSystem impactVFX;
+        print($"enemy: {enemyLayer.value}, mask: {mask.value}");
+        if (enemyLayer.value == mask.value) impactVFX = hitEffectEnemy;
+        else impactVFX = hitEffectGround;
+
+        impactVFX.transform.position = point;
+        impactVFX.transform.LookAt(dir + point);
+        impactVFX.Emit(5);
+        ParticleSystem[] innerVFXs = impactVFX.GetComponentsInChildren<ParticleSystem>();
+        foreach (ParticleSystem vfx in innerVFXs)
+        {
+            vfx.Emit(10);
         }
     }
 

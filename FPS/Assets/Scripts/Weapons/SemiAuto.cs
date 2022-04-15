@@ -12,7 +12,6 @@ public class SemiAuto : Weapon
         ammoAll = 100;
         maxAmmoInMagazine = 30;
         currentAmmo = maxAmmoInMagazine;
-        StartCoroutine(PullWeapon());
         fireRate = 8;
         damage = 15;
         reloadTime = 2;
@@ -25,6 +24,7 @@ public class SemiAuto : Weapon
 
     protected override void ShowWeaponAnim()
     {
+        weaponTitleText.ShowTitle("Semi-Auto");
         anim.SetTrigger("show");
     }
 
@@ -95,7 +95,7 @@ public class SemiAuto : Weapon
     private void ProcessHit(RaycastHit hit)
     {
         DisplayBulletImpact(hit.point, hit.normal, hit.transform.gameObject.layer);
-        EnemyHealth enemy = hit.transform.GetComponent<EnemyHealth>();
+        EnemyHitbox enemy = hit.transform.GetComponent<EnemyHitbox>();
         enemy?.GetDamage(damage);
     }
 
