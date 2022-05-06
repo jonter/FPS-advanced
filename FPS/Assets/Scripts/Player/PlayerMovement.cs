@@ -7,7 +7,8 @@ public enum PlayerState
     WALK,
     SPRINT,
     SLIDE,
-    CROUCH
+    CROUCH,
+    WALLRUN
 }
 
 [SelectionBase]
@@ -33,9 +34,12 @@ public class PlayerMovement : MonoBehaviour
     Camera playerCamera;
     StaminaController staminaController;
 
+    Vector3 wallNormal;
+
     float gravity;
 
     bool isGrounded = false;
+    bool disableWallrun = false;
 
     [SerializeField] GameObject legs;
     [SerializeField] LayerMask groundMask;
@@ -74,9 +78,56 @@ public class PlayerMovement : MonoBehaviour
         VerticalMovement();
         SprintControl();
         CrouchControl();
+        WallrunControl();
         SpeedChangeControl();
         SizeControl();
+        print(state);
+    }
 
+    void WallrunControl()
+    {
+        if (disableWallrun) return;
+        if(isGrounded == true)
+        {
+            if (state == PlayerState.WALLRUN) state = PlayerState.WALK;
+        }
+        else
+        {
+            RaycastHit rayInfo = CheckRaycastsForWall();
+            if (rayInfo.transform == null)
+            {
+                if (state == PlayerState.WALLRUN) state = PlayerState.SPRINT;
+                return;
+            }
+            if (state != PlayerState.SPRINT) return;
+            wallNormal = rayInfo.normal;
+            Vector3 dirVel = new Vector3(velocity.x, 0, velocity.z).normalized;
+            float degree = Vector3.Angle(dirVel, rayInfo.normal);
+            if (degree < 130 && degree > 85)
+                state = PlayerState.WALLRUN;
+            else state = PlayerState.SPRINT;
+        }
+
+    }
+
+    RaycastHit CheckRaycastsForWall()
+    {
+        float heightRay = 0.5f;
+        RaycastHit rayInfo;
+        for (int i = 0; i < 6; i++)
+        {
+            Vector3 pos = transform.position;
+            Vector3 dir;
+            if (i < 3) dir = transform.right * 0.5f;
+            else dir = -transform.right * 0.5f;
+
+            bool isHit = Physics.Raycast(pos, dir, out rayInfo, 1f ,groundMask);
+            if (isHit) return rayInfo;
+
+            heightRay -= 0.5f;
+            if (heightRay < -0.6f) heightRay = 0.5f;
+        }
+        return new RaycastHit();
     }
 
     void SizeControl()
@@ -157,8 +208,10 @@ public class PlayerMovement : MonoBehaviour
         float inputX = Input.GetAxis("Horizontal");
         float inputZ = Input.GetAxis("Vertical");
         Vector3 dir = transform.right * inputX + transform.forward * inputZ;
-        
-        if(!isGrounded) // изменение скорости в полёте
+
+        if (state == PlayerState.WALLRUN)
+            velocity = dir * currentSpeed;
+        else if (!isGrounded) // изменение скорости в полёте
             velocity += dir * Time.deltaTime * flySpeedControl;
         else if (state == PlayerState.SLIDE)
             velocity -= velocity.normalized * Time.deltaTime * slideSlowness;
@@ -173,9 +226,12 @@ public class PlayerMovement : MonoBehaviour
     void VerticalMovement()
     {
         isGrounded = Physics.CheckSphere(legs.transform.position, 0.2f, groundMask);
-        velocityY = velocityY + gravity * Time.deltaTime;
+        if(state == PlayerState.WALLRUN && velocityY < 0) 
+            velocityY += gravity * Time.deltaTime * 0.2f;
+        else 
+            velocityY += gravity * Time.deltaTime;
 
-        if(isGrounded) PreventWallrun();
+        if (isGrounded) PreventWallrun();
 
         if (isGrounded && velocityY < 0)
         {
@@ -188,10 +244,28 @@ public class PlayerMovement : MonoBehaviour
                 staminaController.SpendStamina(20);
             }
         }
+        if (Input.GetKeyDown(KeyCode.Space)&& state == PlayerState.WALLRUN 
+            && staminaController.currentStam > 0)
+        {
+            velocityY = playerJump;
+            velocity += wallNormal * 10;
+            state = PlayerState.SPRINT;
+            staminaController.SpendStamina(20);
+            StartCoroutine(WallrunDisable());
+        }
 
         Vector3 velocityDown = new Vector3(0, velocityY, 0);
         controller.Move(velocityDown * Time.deltaTime);
     }
+
+    IEnumerator WallrunDisable()
+    {
+        disableWallrun = true;
+        yield return new WaitForSeconds(0.2f);
+        disableWallrun = false;
+    }
+
+
 
     void PreventWallrun()
     {
